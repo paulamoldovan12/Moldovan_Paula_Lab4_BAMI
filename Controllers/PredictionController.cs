@@ -1,12 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.ML;
+using Moldovan_Paula_Lab4.Data;
+using Moldovan_Paula_Lab4.Models;
 using static Moldovan_Paula_Lab4.PricePredictionModel;
 
 namespace Moldovan_Paula_Lab4.Controllers
 {
     public class PredictionController : Controller
     {
-        public IActionResult Price(ModelInput input)
+        private readonly AppDbContext _context; 
+        public PredictionController(AppDbContext context) 
+        { 
+            _context = context; 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Price(ModelInput input)
         {
             // Load the model   
             MLContext mlContext = new MLContext();
@@ -18,7 +28,31 @@ namespace Moldovan_Paula_Lab4.Controllers
             // Try model on sample data to predict fair price   
             ModelOutput result = predEngine.Predict(input);
             ViewBag.Price = result.Score;
+
+            var history = new PredictionHistory
+            {
+                PassengerCount = input.Passenger_count,
+                TripTimeInSecs = input.Trip_time_in_secs,
+                TripDistance = input.Trip_distance,
+                PaymentType = input.Payment_type,
+                PredictedPrice = result.Score,
+                CreatedAt = DateTime.Now
+            };
+
+            _context.PredictionHistories.Add(history);
+            await _context.SaveChangesAsync();
+
             return View(input);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> History()
+        {
+            var history = await _context.PredictionHistories
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            return View(history);
         }
     }
 }
