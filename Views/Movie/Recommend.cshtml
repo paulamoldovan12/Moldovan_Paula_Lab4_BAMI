@@ -1,0 +1,43 @@
+﻿@model Moldovan_Paula_Lab4.Models.MovieRatingData
+
+@{
+    ViewData["Title"] = "Recomandare film";
+}
+
+<h2>Recomandare film</h2>
+
+<form asp-controller="Movie" asp-action="Recommend" method="get">
+    <div class="form-group">
+        <label>User ID:</label>
+        <input type="number" name="userId" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label>Movie ID:</label>
+        <input type="number" name="movieId" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Calculează recomandarea</button>
+</form>
+
+@if (ViewBag.Score != null)
+{
+    <hr />
+    <h4>Rezultat predicție</h4>
+    <p><strong>User:</strong> @ViewBag.UserId</p>
+    <p><strong>Movie:</strong> @ViewBag.MovieId</p>
+    <p><strong>Scor prezis:</strong> @ViewBag.Score</p>
+
+    @if (ViewBag.Score > 3.5)
+    {
+        <div class="alert alert-success mt-3">
+            Filmul este recomandat
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger mt-3">
+            Filmul nu este recomandat
+        </div>
+    }
+}
