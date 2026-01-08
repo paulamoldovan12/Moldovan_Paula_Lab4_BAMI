@@ -1,5 +1,6 @@
 using Moldovan_Paula_Lab4.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,9 @@ builder.Services.AddControllersWithViews();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddEndpointsApiExplorer(); 
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -24,6 +28,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseSwagger(); 
+app.UseSwaggerUI();
 
 app.UseAuthorization();
 

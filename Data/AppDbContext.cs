@@ -10,5 +10,8 @@ namespace Moldovan_Paula_Lab4.Data
         {
         }
         public DbSet<PredictionHistory> PredictionHistories { get; set; }
+
+        public DbSet<MoviePredictionHistory> MoviePredictionHistory { get; set; }
+
     }
 }
